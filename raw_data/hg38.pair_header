@@ -1,0 +1,30 @@
+## pairs format v1.0.0
+#sorted: chr1-chr2-pos1-pos2
+#shape: upper triangle
+#genome_assembly: hg38
+#chromsize: chr1 248956422
+#chromsize: chr2 242193529
+#chromsize: chr3 198295559
+#chromsize: chr4 190214555
+#chromsize: chr5 181538259
+#chromsize: chr6 170805979
+#chromsize: chr7 159345973
+#chromsize: chr8 145138636
+#chromsize: chr9 138394717
+#chromsize: chr10 133797422
+#chromsize: chr11 135086622
+#chromsize: chr12 133275309
+#chromsize: chr13 114364328
+#chromsize: chr14 107043718
+#chromsize: chr15 101991189
+#chromsize: chr16 90338345
+#chromsize: chr17 83257441
+#chromsize: chr18 80373285
+#chromsize: chr19 58617616
+#chromsize: chr20 64444167
+#chromsize: chr21 46709983
+#chromsize: chr22 50818468
+#chromsize: chrX 156040895
+#chromsize: chrY 57227415
+#chromsize: chrM 16569
+#columns: readID chrom1 pos1 chrom2 pos2 strand1 strand2 pair_type

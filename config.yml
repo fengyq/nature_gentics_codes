@@ -1,0 +1,54 @@
+# List of samples to analyse, and corresponding fastq ids.
+sample_ids: ["B1T2_HiC-Hae3-Alu1","B1T2_HiC-Hae3","B1T2_HiChIP-Hae3-Alu1","B1T2_HiChIP-Hae3"]
+fastq_ids: ["B1T2_HiC-Hae3-Alu1_R1","B1T2_HiC-Hae3-Alu1_R2","B1T2_HiC-Hae3_R1","B1T2_HiC-Hae3_R2","B1T2_HiChIP-Hae3-Alu1_R1","B1T2_HiChIP-Hae3-Alu1_R2","B1T2_HiChIP-Hae3_R1","B1T2_HiChIP-Hae3_R2"]
+
+# Linker sequences:
+HiC_Linker_F: "ACGCGATATCTTATCTGACAGT"
+HiC_Linker_R: "ACTGTCAGATAAGATATCGCGT"
+
+# Conda env directory
+# binpath: /home/fengyq/anaconda3/envs/snakemake/bin/
+binpath: /home/fengyq/anaconda3/envs/snakemake/bin/
+
+# FLASH merging parameters
+flash: -m 25 -M 150 -t 8 -p 33
+ # -m, The minimum required overlap length between two reads to provide a confident overlap.  Default:25bp.
+ # -M, Maximum overlap length expected in approximately 90% of read pairs
+ # -t, Set the number of worker threads.
+ # -p, --phred-offset, The smallest ASCII value of the characters used to represent quality values of bases in FASTQ files.
+
+# fastp parameters
+fastp_options: --thread 3 --disable_adapter_trimming --disable_quality_filtering --length_required 20
+# the last cycle of Illumina sequencing is uaually with low quality, and it can be dropped
+
+# bwa mapping_options
+bwa_options: -t16 -5SP -p
+# -p is necessary for two adjacent reads have the same name, as stdout from fastp are  interleaved reads
+# -t Number of threads
+# The -SP option is used to ensure the results are equivalent to that obtained by running bwa mem on each mate separately, while retaining the right formatting for paired-end reads. This option skips a step in bwa mem that forces alignment of a poorly aligned read given an alignment of its mate with the assumption that the two mates are part of a single genomic segment.
+# We use bwa mem to align Hi-C data, with the -5, -S, and -P options. These options aren’t documented that well in the online bwa documentation, but they are documented in the usage of bwa mem. -5 is sometimes called “the Hi-C option” as it was designed to help the aligner handle the statistical properties of Hi-C libraries better, mainly by reducing the amount of secondary and alternate mappings the aligner makes as those cause Hi-C data to become ambiguous. The -S and -P options cause the aligner not to try to use assumptions about the reads that might be true for shotgun or mate pair libraries in an effort to rescue more reads. In fact, using these options to avoid those rescue efforts usually results in more of the Hi-C data having a useful alignment!
+#The -5 option is used to report the 5' portion of chimeric alignments as the primary alignment. In Hi-C experiments, when a mate has chimeric alignments, typically, the 5' portion is the position of interest, while the 3' portion represents the same fragment as the mate. For chimeric alignments, bwa mem reports two alignments: one of them is annotated as primary and soft-clipped, retaining the full-length of the original sequence. The other end is annotated as hard-clipped and marked as either 'supplementary' or 'secondary'. The -5 option forces the 5'end to be always annotated as primary.
+
+# bwa index location
+bwa_index: /home/fengyq/genome/hg38/bwa_index/hg38.fa
+assembly: hg38
+
+# samtools_options
+samtools_options: -bhS -F 2316 -@4
+# do not sort bam for making bedpe; 2316 remove pair whose read or mate are unmapped.
+# https://phasegenomics.github.io/2019/09/19/hic-alignment-and-qc.html
+
+# chrom_sizes file location
+chrom_sizes: /home/fengyq/genome/hg38/bwa_index/hg38.chrom.sizes
+# cut -f1,2 hg38.fasta.fai > hg38.chrom.sizes
+
+# pairtools options
+pair_header: /home/fengyq/data/HiC/snakemake_hic/raw_data/hg38.pair_header
+sort_options: --nproc 8 --memory 2G --nproc-in 3 --nproc-out 8
+
+#
+# mcool resolutions
+resolutions: 1000,2000,5000,10000,50000,100000,500000
+balance: " "
+
+# for hic use --balance, hichip do not balance
