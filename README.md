@@ -1,2 +1,2 @@
 # nature_gentics_codes
-code for analyzing hic and hichip data 
+Codes for analyzing ATAC-Seq, RNA-Seq, CUT&RUN, MPRA, Hi-C and HiChIP data 
